@@ -94,6 +94,31 @@ public class SQL {
 		}
 	}
 
+	public static boolean changeTag(String id, String newTitle) {
+		// Возвращает true если выполнен коректно
+		String query1 = "SELECT title FROM tags WHERE id = ?";
+		String query2 = "UPDATE tags SET title = ? WHERE id = ?";
+		try (PreparedStatement statement1 = connection.prepareStatement(query1);
+				PreparedStatement statement2 = connection.prepareStatement(query2)) {
+			statement1.setObject(1, UUID.fromString(id));
+			ResultSet resultSet = statement1.executeQuery();
+			if (!resultSet.next()) {
+				throw new SQLException("Запись с id \"" + id + "\" не найдена.");
+			}
+			statement2.setObject(2, UUID.fromString(id));
+			statement2.setString(1, newTitle);
+			int affectedRows = statement2.executeUpdate();
+			if (affectedRows == 0) {
+				throw new SQLException("Не удалось обновить тэг.");
+			}
+		} catch (SQLException e) {
+			System.err.println("Ошибка добавления тега: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
 	// TODO: Удалить это в релизе.
 	public static void test() {
 		System.out.println("IM READY!");

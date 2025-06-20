@@ -51,6 +51,28 @@ public class App {
 
 		});
 
+		put("/tags/usual", (req, res) -> {
+			try {
+				// TODO: Добавить обработку cookie.
+				JsonObject body = new Gson().fromJson(req.body(), JsonObject.class);
+
+				if (body.has("id") && body.has("title")) {
+					String title = body.get("title").getAsString();
+					String id = body.get("id").getAsString();
+					if (SQL.changeTag(id, title)) {
+						res.status(200);
+					}
+				} else {
+					res.status(400);
+				}
+			} catch (Exception e) {
+				res.status(400);
+				System.err.println(e.getMessage());
+				e.printStackTrace();
+			}
+			return "";
+		});
+
 	}
 
 }
