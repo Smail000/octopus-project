@@ -3,6 +3,7 @@ package bonch.space;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * SQL
@@ -67,6 +68,33 @@ public class SQL {
 
 	}
 
+	public static void addTag(String title) {
+		String query = "INSERT INTO tags(id,title) VALUES (?,?)";
+		while (true) {
+			try (PreparedStatement statement = connection.prepareStatement(query)) {
+				UUID id = UUID.randomUUID();
+				statement.setObject(1, id);
+				statement.setString(2, title);
+				int affectedRows = statement.executeUpdate();
+				if (affectedRows > 0) {
+					System.out.println("Tag \"" + title + "\" added");
+					return;
+				}
+
+			} catch (SQLException e) {
+				if (e.getSQLState() != null && e.getSQLState().equals("23505")) {
+					continue;
+				} else {
+					System.err.println("Ошибка добавления тега: " + e.getMessage());
+					e.printStackTrace();
+					return;
+				}
+			}
+			break;
+		}
+	}
+
+	// TODO: Удалить это в релизе.
 	public static void test() {
 		System.out.println("IM READY!");
 	}

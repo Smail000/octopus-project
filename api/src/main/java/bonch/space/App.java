@@ -3,6 +3,7 @@ package bonch.space;
 import static spark.Spark.*;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * Hello world!
@@ -29,6 +30,27 @@ public class App {
 			res.status(200);
 			return new Gson().toJson(SQL.getAllTags());
 		});
+		post("/tags/usual", (req, res) -> {
+			// TODO: Добавить обработку cookie.
+			try {
+				JsonObject body = new Gson().fromJson(req.body(), JsonObject.class);
+
+				if (body.has("title")) {
+					String title = body.get("title").getAsString();
+					SQL.addTag(title);
+				} else {
+					res.status(400);
+					return "Invalid JSON";
+				}
+			} catch (Exception e) {
+				res.status(400);
+				return "Invalid JSON";
+			}
+			res.status(200);
+			return "";
+
+		});
+
 	}
 
 }
