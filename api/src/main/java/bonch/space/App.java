@@ -72,6 +72,26 @@ public class App {
 			}
 			return "";
 		});
+		delete("/tags/usual", (req, res) -> {
+			try {
+				// TODO: Добавить обработку cookie.
+				JsonObject body = new Gson().fromJson(req.body(), JsonObject.class);
+
+				if (body.has("id") && body.has("title")) {
+					String id = body.get("id").getAsString();
+					if (SQL.deleteTag(id)) {
+						res.status(200);
+					}
+				} else {
+					res.status(400);
+				}
+			} catch (Exception e) {
+				res.status(400);
+				System.err.println(e.getMessage());
+				e.printStackTrace();
+			}
+			return "";
+		});
 
 	}
 

@@ -112,7 +112,31 @@ public class SQL {
 				throw new SQLException("Не удалось обновить тэг.");
 			}
 		} catch (SQLException e) {
-			System.err.println("Ошибка добавления тега: " + e.getMessage());
+			System.err.println("Ошибка обновления тега: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean deleteTag(String id) {
+		// Возвращает true если выполнен коректно
+		String query1 = "SELECT title FROM tags WHERE id = ?";
+		String query2 = "DELETE FROM tags WHERE id = ?";
+		try (PreparedStatement statement1 = connection.prepareStatement(query1);
+				PreparedStatement statement2 = connection.prepareStatement(query2)) {
+			statement1.setObject(1, UUID.fromString(id));
+			ResultSet resultSet = statement1.executeQuery();
+			if (!resultSet.next()) {
+				throw new SQLException("Запись с id \"" + id + "\" не найдена.");
+			}
+			statement2.setObject(1, UUID.fromString(id));
+			int affectedRows = statement2.executeUpdate();
+			if (affectedRows == 0) {
+				throw new SQLException("Не удалось удалить тэг.");
+			}
+		} catch (SQLException e) {
+			System.err.println("Ошибка удаления тега: " + e.getMessage());
 			e.printStackTrace();
 			return false;
 		}
