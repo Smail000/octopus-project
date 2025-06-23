@@ -40,6 +40,57 @@ public class SQL {
 				        title TEXT UNIQUE NOT NULL
 				    );
 				""";
+		String createUsersTable = """
+				CREATE TABLE IF NOT EXIST public.users (
+					login TEXT UNIQUE NOT NULL,
+					password TEXT NOT NULL,
+					name TEXT NOT NULL,
+					description TEXT,
+					shortDescription TEXT,
+					isAdmin BOOLEAN NOT NULL,
+					isHiden BOOLEAN NOT NULL,
+					priority INT NOT NULL,
+					id INT SERIAL PRIMARY KEY,
+					projects UUID[],
+					token UUID UNIQUE NOT NULL,
+					photo TEXT
+				);
+				""";
+		String createBidTable = """
+				CREATE TABLE IF NOT EXIST public.bid (
+					id INT SERIAL PRIMARY KEY,
+					date TIMESTAMP NOT NULL,
+					name TEXT,
+					text TEXT NOT NULL,
+					tag INT NOT NULL,
+					contact TEXT
+				);
+				""";
+		String createKeyTable = """
+				CREATE TABLE IF NOT EXIST public.key (
+									key TEXT PRIMARY KEY,
+									date TIMESTAMP NOT NULL
+						);
+								""";
+		String createPostsTable = """
+				CREATE TABLE IF NOT EXIST public.posts (
+						title TEXT NOT NULL,
+						id UUID PRIMARY KEY,
+						content TEXT NOT NULL,
+						date TIMESTAMP NOT NULL,
+						author INT NOT NULL,
+						tags UUID[]
+						);
+					""";
+		String createProjectsTable = """
+				CREATE TABLE IF NOT EXIST public.projects (
+					title TEXT NOT NULL,
+					shortTitle TEXT NOT NULL,
+					id UUID PRIMARY KEY,
+					description TEXT NOT NULL
+					);
+					""";
+
 		try (Statement statement = connection.createStatement()) {
 			statement.execute(createTagsTable);
 			System.out.println("Table tags initialisated");
